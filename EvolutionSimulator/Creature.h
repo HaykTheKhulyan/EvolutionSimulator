@@ -28,7 +28,9 @@ public:
 
 	float currentEnergy;
 
-	bool swimming = false;
+	bool canWalk;
+	bool canSwim;
+	
 
 	bool herbivore = false;
 	bool carnivore = false;
@@ -37,10 +39,13 @@ public:
 
 private:
 
+
 	float xOffset;
 	float yOffset;
-	bool up = false;
-	bool right = false;
+
+	// DIAGONAL MOTION, CURRENTLY DISABLED
+	// bool up = false;
+	// bool right = false;
 
 	float myDeltaTime = 0.0f;
 

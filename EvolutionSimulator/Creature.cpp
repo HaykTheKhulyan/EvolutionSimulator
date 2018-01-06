@@ -12,22 +12,30 @@ Creature::Creature() {
 	std::uniform_int_distribution<int> xCoordDistribution(0, 1500);
 	std::uniform_int_distribution<int> yCoordDistribution(0, 1080);
 	std::uniform_int_distribution<int> rgbDistribution(0, 255);
-
+	std::uniform_int_distribution<int> movementDistribution(-100, 100);
 
 	allocateStats();
+
+	/* DIAGONAL MOTION, CURRENTLY DISABLED 
+
 
 	if (rand() % 2 == 0)
 		up = true;
 	if (rand() % 2 == 0)
 		right = true;
 
-	yOffset = float(features[2]) / 50;
-	xOffset = float(features[2]) / 50;
+	yOffset = float(features[2]) / 1000;
+	xOffset = float(features[2]) / 1000;
 
 	if (up)
 		yOffset = -yOffset;
 	if (!right)
 		xOffset = -xOffset;
+	*/
+
+	xOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
+	yOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
+
 
 	bodyTexture.loadFromFile("square.png");
 	
@@ -48,10 +56,25 @@ void Creature::Draw(sf::RenderWindow& window) {
 void Creature::Update(float deltaTime, sf::Image& map) {
 	std::random_device rd;
 	std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<int> movementDistribution(-100, 100);
+	std::uniform_int_distribution<int> myDeltaTimeDistribution(25, 75);
+
+	myDeltaTime += deltaTime;
+	// Random motion 
+	if (myDeltaTime > static_cast<float>(myDeltaTimeDistribution(mt)) / 100) {
+		myDeltaTime = 0.0f;
+		xOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
+		yOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
+	}
+
+	/* DIAGONAL MOTION, CURRENTLY DISABLED
+
+
 	std::uniform_int_distribution<int> oneZeroDistribution(0, 1);
 
 	myDeltaTime += deltaTime;
-	if (myDeltaTime > 0.25f) {
+	if (myDeltaTime > 0.5f) {
 		myDeltaTime = 0.0f;
 
 		if (oneZeroDistribution(mt) == 0)
@@ -59,23 +82,24 @@ void Creature::Update(float deltaTime, sf::Image& map) {
 		if (oneZeroDistribution(mt) == 0)
 			right = true;
 
-		yOffset = static_cast<float>(features[2]) / 50;
-		xOffset = static_cast<float>(features[2]) / 50;
+		xOffset = static_cast<float>(features[2]) / 1000;
+		yOffset = static_cast<float>(features[2]) / 1000;
 
 		if (up)
 			yOffset = -yOffset;
 		if (!right)
 			xOffset = -xOffset;
 	}
+	*/
 
 	if (body.getPosition().x + xOffset >= 0 && body.getPosition().x + xOffset <= 1500 && body.getPosition().y + yOffset >= 0 && body.getPosition().y + yOffset <= 1080) {
 		if (map.getPixel(body.getPosition().x + xOffset, body.getPosition().y + yOffset) != sf::Color(0, 100, 158))
 			body.move(xOffset, yOffset);
 	}
 	
-
-	up = false;
-	right = false;
+	// DIAGONAL MOTION, CURRENTLY DISABLED
+	// up = false;
+	// right = false;
 }
 
 void Creature::allocateStats(int skillPoints) {

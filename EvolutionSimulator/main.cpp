@@ -30,6 +30,10 @@
 #include <iostream>
 #include "Creature.h"
 
+
+const int NUM_CREATURES = 100;
+
+
 int main() {
 	// selects a seed (different each time it runs)
 	srand(time(NULL));
@@ -55,9 +59,20 @@ int main() {
 	map.setOrigin(sf::Vector2f(750.0f, 540.0f));
 	map.setPosition(sf::Vector2f(750.0f, 540.0f));
 
+	// creates the sidePanel texture that will display the clock and selected creature information on the right
+	sf::Texture sidePanelTexture;
+	sidePanelTexture.loadFromFile("sidePanel.png");
+
+	// creates the sidePanel rectangle with proper dimensions and gives it the sidePanelTexture
+	sf::RectangleShape sidePanel;
+	sidePanel.setTexture(&sidePanelTexture);
+	sidePanel.setSize(sf::Vector2f(420.0f, 1080.0f));
+	sidePanel.setOrigin(sf::Vector2f(210.0f, 540.0f));
+	sidePanel.setPosition(sf::Vector2f(1710.0f, 540.0f));
+
 	// creates a Creature vector and fills it with 10 Creature objects
 	std::vector<Creature> creatureList;
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < NUM_CREATURES; i++) {
 		creatureList.emplace_back();
 	}
 
@@ -78,17 +93,17 @@ int main() {
 					window.close();
 		}
 		if (deltaTime > .00167) {
-			for (int i = 0; i < 1000; i++)
+			for (int i = 0; i < NUM_CREATURES; i++)
 				creatureList.at(i).Update(deltaTime, mapImage);
 			deltaTime = 0;
 		}
 
-
 		window.clear(sf::Color::Black);
 
 		window.draw(map);
+		window.draw(sidePanel);
 
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < NUM_CREATURES; i++)
 			creatureList.at(i).Draw(window);
 
 		window.display();
