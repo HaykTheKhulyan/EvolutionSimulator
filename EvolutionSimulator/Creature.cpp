@@ -5,14 +5,15 @@
 #include "SFML/Graphics.hpp"
 
 
-Creature::Creature() {
+Creature::Creature(sf::Image& map) {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 
-	std::uniform_int_distribution<int> xCoordDistribution(0, 1500);
-	std::uniform_int_distribution<int> yCoordDistribution(0, 1080);
+	std::uniform_int_distribution<int> xCoordDistribution(10, 1500);
+	std::uniform_int_distribution<int> yCoordDistribution(10, 1079);
 	std::uniform_int_distribution<int> rgbDistribution(0, 255);
 	std::uniform_int_distribution<int> movementDistribution(-100, 100);
+	std::uniform_int_distribution<int> probabilityDistribution(0, 99);
 
 	allocateStats();
 
@@ -43,6 +44,19 @@ Creature::Creature() {
 	body.setPosition(sf::Vector2f(xCoordDistribution(mt), yCoordDistribution(mt)));
 	body.setColor(sf::Color(rgbDistribution(mt), rgbDistribution(mt), rgbDistribution(mt)));
 	body.setTexture(bodyTexture);
+
+	// if the creature is spawned on water, it can swim 
+	if (map.getPixel(body.getPosition().x, body.getPosition().y) == sf::Color(0, 100, 158)) {
+		canSwim = true;
+		// rolls a 30% probability to determine whether the creature can walk
+		if (probabilityDistribution(mt) < 30) {
+			canWalk = false;
+		}
+	}
+	// If the creature is spawned on land and rolls a 30% probability, it can swim
+	else if (probabilityDistribution(mt) < 30) {
+		canSwim = true;
+	}
 }
 
 
@@ -92,14 +106,57 @@ void Creature::Update(float deltaTime, sf::Image& map) {
 	}
 	*/
 
-	if (body.getPosition().x + xOffset >= 0 && body.getPosition().x + xOffset <= 1500 && body.getPosition().y + yOffset >= 0 && body.getPosition().y + yOffset <= 1080) {
-		if (map.getPixel(body.getPosition().x + xOffset, body.getPosition().y + yOffset) != sf::Color(0, 100, 158))
+	// checks to make sure the creature wants to move on the map and not off it
+	if (body.getPosition().x + xOffset >= 10 && body.getPosition().x + xOffset < 1500 && body.getPosition().y + yOffset >= 10 && body.getPosition().y + yOffset < 1080) {
+		// if the creature can walk and swim, no checks are needed for terrain type
+		if (canWalk && canSwim) {
 			body.move(xOffset, yOffset);
+		}
+		// creature can't swim, so we check to make sure the creature wants to move on land and not water
+		else if (canWalk) {
+			if (map.getPixel(body.getPosition().x + xOffset, body.getPosition().y + yOffset) != sf::Color(0, 100, 158))
+				body.move(xOffset, yOffset);
+		}
+		// creature can't walk, so we check to make sure the creature wants to move on water and not land
+		else {
+			if (map.getPixel(body.getPosition().x + xOffset, body.getPosition().y + yOffset) != sf::Color(23, 94, 37))
+				body.move(xOffset, yOffset);
+		}
+		
 	}
 	
 	// DIAGONAL MOTION, CURRENTLY DISABLED
 	// up = false;
 	// right = false;
+}
+
+void Creature::displayStats() {
+	sf::Text offenseText;
+	sf::Text defenseText;
+	sf::Text speedText;
+	sf::Text camouflageText;
+	sf::Text reproductionRateText;
+	sf::Text lifeSpanText;
+	sf::Text metabolismText;
+	sf::Text intelligenceText;
+	sf::Text teamworkText;
+	sf::Text eyesightText;
+}
+
+bool Creature::isTouchingMouse(sf::Vector2i mousePosition) {
+	float xPos = mousePosition.x;
+	float yPos = mousePosition.y;
+
+	if (xPos >= body.getPosition().x - 10 && xPos <= body.getPosition().y - 10 &&
+		yPos >= body.getPosition().y - 10 && yPos <= body.getPosition().y + 10) {
+		return true;
+	}
+	return false;
+}
+
+sf::Vector2f Creature::getPosition() {
+
+	return sf::Vector2f();
 }
 
 void Creature::allocateStats(int skillPoints) {

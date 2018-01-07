@@ -7,11 +7,16 @@
 
 class Creature {
 public:
-	Creature();
+	Creature(sf::Image& map);
 	~Creature();
 
 	void Draw(sf::RenderWindow& window);
 	void Update(float deltaTime, sf::Image& map);
+
+	void displayStats();
+	bool isTouchingMouse(sf::Vector2i mousePosition);
+
+	sf::Vector2f getPosition();
 
 	std::string FEATURE_LIST[10] = {
 		"offense" ,
@@ -28,20 +33,22 @@ public:
 
 	float currentEnergy;
 
-	bool canWalk;
-	bool canSwim;
-	
+	// true by default, if the creature is a swimmer, 30% chance it can't walk
+	bool canWalk = true;
+	// false by default, if creature is spawned on water OR rolls a 30% chance, it can swim
+	bool canSwim = false;
 
+	// can the creature eat plants?
 	bool herbivore = false;
+	// can the creature eat meat?
 	bool carnivore = false;
 
 	short int features[10];
-
 private:
-
-
 	float xOffset;
 	float yOffset;
+
+	bool selected = false;
 
 	// DIAGONAL MOTION, CURRENTLY DISABLED
 	// bool up = false;
