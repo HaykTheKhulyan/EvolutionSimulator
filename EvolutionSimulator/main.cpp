@@ -120,8 +120,7 @@ int main() {
 					if (creatureList.at(i).isTouchingMouse(mousePosition)) {
 						std::cout << "CREATURE PRESSED" << std::endl;
 					}
-				}
-					
+				}	
 			}
 		}
 

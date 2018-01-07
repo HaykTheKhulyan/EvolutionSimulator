@@ -9,8 +9,8 @@ Creature::Creature(sf::Image& map) {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 
-	std::uniform_int_distribution<int> xCoordDistribution(10, 1500);
-	std::uniform_int_distribution<int> yCoordDistribution(10, 1079);
+	std::uniform_int_distribution<int> xCoordDistribution(0, 1500);
+	std::uniform_int_distribution<int> yCoordDistribution(0, 1079);
 	std::uniform_int_distribution<int> rgbDistribution(0, 255);
 	std::uniform_int_distribution<int> movementDistribution(-100, 100);
 	std::uniform_int_distribution<int> probabilityDistribution(0, 99);
@@ -40,7 +40,7 @@ Creature::Creature(sf::Image& map) {
 
 	bodyTexture.loadFromFile("square.png");
 	
-	body.setOrigin(sf::Vector2f(10.0f, 10.0f));
+	body.setOrigin(sf::Vector2f(5.0f, 5.0f));
 	body.setPosition(sf::Vector2f(xCoordDistribution(mt), yCoordDistribution(mt)));
 	body.setColor(sf::Color(rgbDistribution(mt), rgbDistribution(mt), rgbDistribution(mt)));
 	body.setTexture(bodyTexture);
@@ -107,7 +107,8 @@ void Creature::Update(float deltaTime, sf::Image& map) {
 	*/
 
 	// checks to make sure the creature wants to move on the map and not off it
-	if (body.getPosition().x + xOffset >= 10 && body.getPosition().x + xOffset < 1500 && body.getPosition().y + yOffset >= 10 && body.getPosition().y + yOffset < 1080) {
+	if (body.getPosition().x + xOffset > 0 && body.getPosition().x + xOffset < 1500 && 
+		body.getPosition().y + yOffset > 0 && body.getPosition().y + yOffset < 1080) {
 		// if the creature can walk and swim, no checks are needed for terrain type
 		if (canWalk && canSwim) {
 			body.move(xOffset, yOffset);
@@ -144,11 +145,11 @@ void Creature::displayStats() {
 }
 
 bool Creature::isTouchingMouse(sf::Vector2i mousePosition) {
-	float xPos = mousePosition.x;
-	float yPos = mousePosition.y;
+	int xPos = mousePosition.x;
+	int yPos = mousePosition.y;
 
-	if (xPos >= body.getPosition().x - 10 && xPos <= body.getPosition().y - 10 &&
-		yPos >= body.getPosition().y - 10 && yPos <= body.getPosition().y + 10) {
+	if (xPos >= body.getPosition().x - 5 && xPos <= body.getPosition().x + 5 &&
+		yPos >= body.getPosition().y - 5 && yPos <= body.getPosition().y + 5) {
 		return true;
 	}
 	return false;
