@@ -9,6 +9,7 @@
 #include <iostream>
 #include "Creature.h"
 
+// dictates how many creatures are spawned at the beginning
 const int NUM_CREATURES = 100;
 
 int main() {
@@ -47,49 +48,61 @@ int main() {
 	sidePanel.setOrigin(sf::Vector2f(210.0f, 540.0f));
 	sidePanel.setPosition(sf::Vector2f(1710.0f, 540.0f));
 
+	// keeps track of the number of months elapsed (starts at 0 but limited from 1-12)
 	int numMonths = 0;
+	// keeps track of the number of years elapsed
 	int numYears = 0;
 
-	sf::Font clockFont;
-	clockFont.loadFromFile("PIXEARG_.TTF");
+	// creates the font used by text
+	sf::Font font;
+	// stores the font used by the text (pixelized arial)
+	font.loadFromFile("PIXEARG_.TTF");
 
+	// text object for the months counter on the clock
 	sf::Text clockMonths;
-	clockMonths.setFont(clockFont);
+	// sets the font to the universal font of this project
+	clockMonths.setFont(font);
+	// starts at 0 months
 	clockMonths.setString(std::to_string(numMonths));
+	// sets the font size
 	clockMonths.setCharacterSize(15);
+	// black text
 	clockMonths.setFillColor(sf::Color::Black);
+	// sets the position for the month counter
 	clockMonths.setPosition(sf::Vector2f(1530.0f, 18.0f));
 
+	// text object for the year counter on the clock
 	sf::Text clockYears;
-	clockYears.setFont(clockFont);
+	clockYears.setFont(font);
+	// starts at 0 years
 	clockYears.setString(std::to_string(numYears));
 	clockYears.setCharacterSize(15);
 	clockYears.setFillColor(sf::Color::Black);
 	clockYears.setPosition(sf::Vector2f(1560.0f, 18.0f));
-	
-	sf::Font statsFont;
-	statsFont.loadFromFile("PIXEARG_.TTF");
 
+	// creates the texture object for the target that appears when you select (click on) a creature
 	sf::Texture targetTexture;
 	targetTexture.loadFromFile("target.png");
 
+	// creates the texture object for the texture of the creature (just a black circle with a white fill
 	sf::Texture creatureTexture;
-	creatureTexture.loadFromFile("square.png");
+	creatureTexture.loadFromFile("circle.png");
 
 	// creates a Creature vector and fills it with 10 Creature objects
 	std::vector<Creature> creatureList;
 	for (int i = 0; i < NUM_CREATURES; i++) {
-		creatureList.emplace_back(mapImage, statsFont, creatureTexture, targetTexture);
+		creatureList.emplace_back(mapImage, font, creatureTexture, targetTexture);
 	}
-
-	sf::Vector2i mousePosition;
-
-	// keeps track of the time since the last update
+	
+	// a timer that keeps track of the elapsed time since the last window loop
+	float deltaTime = 0.0f;
+	// a timer that keeps track of the elapsed time since the last update to the creatures
 	float creatureUpdateTimer = 0.0f;
+	// a timer that keeps track of the elapsed time since the last update to the clock
 	float clockTimer = 0.0f;
+	// creates the clock object 
 	sf::Clock clock;
 
-	float deltaTime = 0.0f;
 
 	while (window.isOpen()) {
 		// this restarts the clock and adds the elapsed time since the last restart to deltaTime
@@ -108,10 +121,8 @@ int main() {
 				}
 			}
 			else if (event.type == sf::Event::MouseButtonPressed) {
-				mousePosition = sf::Mouse::getPosition(window);
 				for (int i = 0; i < NUM_CREATURES; i++) {
-					if (creatureList.at(i).isTouchingMouse(mousePosition)) {
-
+					if (creatureList.at(i).isTouchingMouse(sf::Mouse::getPosition(window))) {
 						for (int i = 0; i < NUM_CREATURES; i++) {
 							creatureList.at(i).selected = false;
 						}
@@ -153,8 +164,9 @@ int main() {
 		window.draw(clockMonths);
 		window.draw(clockYears);
 
-		for (int i = 0; i < NUM_CREATURES; i++)
+		for (int i = 0; i < NUM_CREATURES; i++) {
 			creatureList.at(i).Draw(window);
+		}
 
 		window.display();
 	}
