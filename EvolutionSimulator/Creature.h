@@ -7,7 +7,7 @@
 
 class Creature {
 public:
-	Creature(sf::Image& map, sf::Font& statsFont, sf::Texture& bodyTexture);
+	Creature(sf::Image& map, sf::Font& statsFont, sf::Texture& bodyTexture, sf::Texture& targetTexture);
 	~Creature();
 
 	void Draw(sf::RenderWindow& window);
@@ -17,8 +17,6 @@ public:
 	bool isTouchingMouse(sf::Vector2i mousePosition);
 
 	bool selected = false;
-
-	sf::Vector2f getPosition();
 
 	std::string FEATURE_LIST[10] = {
 		"offense" ,
@@ -47,17 +45,6 @@ public:
 
 	short int features[10];
 private:
-	sf::Text offenseText;
-	sf::Text defenseText;
-	sf::Text speedText;
-	sf::Text camouflageText;
-	sf::Text reproductionRateText;
-	sf::Text lifeSpanText;
-	sf::Text metabolismText;
-	sf::Text intelligenceText;
-	sf::Text teamworkText;
-	sf::Text eyesightText;
-
 	float xOffset;
 	float yOffset;
 
@@ -69,7 +56,21 @@ private:
 
 	void allocateStats(int skillPoints = 500);
 
-	sf::Texture bodyTexture;
 	sf::Sprite body;
+	sf::Sprite target;
+
+	sf::Text offenseText;
+	sf::Text defenseText;
+	sf::Text speedText;
+	sf::Text camouflageText;
+	sf::Text reproductionRateText;
+	sf::Text lifeSpanText;
+	sf::Text metabolismText;
+	sf::Text intelligenceText;
+	sf::Text teamworkText;
+	sf::Text eyesightText;
+
+	sf::Text swimmerText;
+	sf::Text walkerText;
 };
 

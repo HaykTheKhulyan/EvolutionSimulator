@@ -3,22 +3,6 @@
 	This simulator will create a pool of random creatures. 
 	Creatures will have multiple variables controlling various features
 
-	TODOS:
-	make creatures interact with each other
-	make creatures who can both walk and swim swim slower than they walk OR walk slower than they swim (randomly)
-
-
-	CURRENT TODO:
-
-	spawn a certain number of creatures in random places
-	*VERY IMPORTANT* make prettier creatures
-	
-
-	CURRENT CAPABILITIES: 
-
-	draws a single creature with random color, random features, and random position
-	draws map
-	creature can move in diagonals with randomly chosen direction
 */
 
 #include <SFML/Graphics.hpp>
@@ -86,13 +70,16 @@ int main() {
 	sf::Font statsFont;
 	statsFont.loadFromFile("PIXEARG_.TTF");
 
+	sf::Texture targetTexture;
+	targetTexture.loadFromFile("target.png");
+
 	sf::Texture creatureTexture;
 	creatureTexture.loadFromFile("square.png");
 
 	// creates a Creature vector and fills it with 10 Creature objects
 	std::vector<Creature> creatureList;
 	for (int i = 0; i < NUM_CREATURES; i++) {
-		creatureList.emplace_back(mapImage, statsFont, creatureTexture);
+		creatureList.emplace_back(mapImage, statsFont, creatureTexture, targetTexture);
 	}
 
 	sf::Vector2i mousePosition;
