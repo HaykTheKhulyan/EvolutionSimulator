@@ -7,14 +7,16 @@
 
 class Creature {
 public:
-	Creature(sf::Image& map);
+	Creature(sf::Image& map, sf::Font& statsFont, sf::Texture& bodyTexture);
 	~Creature();
 
 	void Draw(sf::RenderWindow& window);
 	void Update(float deltaTime, sf::Image& map);
 
-	void displayStats();
+	void createStatsText(sf::Font& myStatsFont);
 	bool isTouchingMouse(sf::Vector2i mousePosition);
+
+	bool selected = false;
 
 	sf::Vector2f getPosition();
 
@@ -45,10 +47,19 @@ public:
 
 	short int features[10];
 private:
+	sf::Text offenseText;
+	sf::Text defenseText;
+	sf::Text speedText;
+	sf::Text camouflageText;
+	sf::Text reproductionRateText;
+	sf::Text lifeSpanText;
+	sf::Text metabolismText;
+	sf::Text intelligenceText;
+	sf::Text teamworkText;
+	sf::Text eyesightText;
+
 	float xOffset;
 	float yOffset;
-
-	bool selected = false;
 
 	// DIAGONAL MOTION, CURRENTLY DISABLED
 	// bool up = false;

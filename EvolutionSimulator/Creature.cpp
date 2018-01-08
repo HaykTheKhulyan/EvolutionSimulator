@@ -5,17 +5,19 @@
 #include "SFML/Graphics.hpp"
 
 
-Creature::Creature(sf::Image& map) {
+Creature::Creature(sf::Image& map, sf::Font& statsFont, sf::Texture& bodyTexture) {
 	std::random_device rd;
 	std::mt19937 mt(rd());
 
-	std::uniform_int_distribution<int> xCoordDistribution(0, 1500);
-	std::uniform_int_distribution<int> yCoordDistribution(0, 1079);
+	std::uniform_int_distribution<int> xCoordDistribution(5, 1495);
+	std::uniform_int_distribution<int> yCoordDistribution(5, 1075);
 	std::uniform_int_distribution<int> rgbDistribution(0, 255);
 	std::uniform_int_distribution<int> movementDistribution(-100, 100);
 	std::uniform_int_distribution<int> probabilityDistribution(0, 99);
 
+
 	allocateStats();
+	createStatsText(statsFont);
 
 	/* DIAGONAL MOTION, CURRENTLY DISABLED 
 
@@ -36,9 +38,6 @@ Creature::Creature(sf::Image& map) {
 
 	xOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
 	yOffset = static_cast<float>(movementDistribution(mt)) / (500 * (log(static_cast<float>(features[2]))));
-
-
-	bodyTexture.loadFromFile("square.png");
 	
 	body.setOrigin(sf::Vector2f(5.0f, 5.0f));
 	body.setPosition(sf::Vector2f(xCoordDistribution(mt), yCoordDistribution(mt)));
@@ -65,6 +64,19 @@ Creature::~Creature() {
 
 void Creature::Draw(sf::RenderWindow& window) {
 	window.draw(body);
+
+	if (selected) {
+		window.draw(offenseText);
+		window.draw(defenseText);
+		window.draw(speedText);
+		window.draw(camouflageText);
+		window.draw(reproductionRateText);
+		window.draw(lifeSpanText);
+		window.draw(metabolismText);
+		window.draw(intelligenceText);
+		window.draw(teamworkText);
+		window.draw(eyesightText);
+	}
 }
 
 void Creature::Update(float deltaTime, sf::Image& map) {
@@ -107,8 +119,8 @@ void Creature::Update(float deltaTime, sf::Image& map) {
 	*/
 
 	// checks to make sure the creature wants to move on the map and not off it
-	if (body.getPosition().x + xOffset > 0 && body.getPosition().x + xOffset < 1500 && 
-		body.getPosition().y + yOffset > 0 && body.getPosition().y + yOffset < 1080) {
+	if (body.getPosition().x + xOffset > 5 && body.getPosition().x + xOffset < 1495 && 
+		body.getPosition().y + yOffset > 5 && body.getPosition().y + yOffset < 1075) {
 		// if the creature can walk and swim, no checks are needed for terrain type
 		if (canWalk && canSwim) {
 			body.move(xOffset, yOffset);
@@ -131,17 +143,66 @@ void Creature::Update(float deltaTime, sf::Image& map) {
 	// right = false;
 }
 
-void Creature::displayStats() {
-	sf::Text offenseText;
-	sf::Text defenseText;
-	sf::Text speedText;
-	sf::Text camouflageText;
-	sf::Text reproductionRateText;
-	sf::Text lifeSpanText;
-	sf::Text metabolismText;
-	sf::Text intelligenceText;
-	sf::Text teamworkText;
-	sf::Text eyesightText;
+void Creature::createStatsText(sf::Font& myStatsFont) {
+	offenseText.setFont(myStatsFont);
+	offenseText.setString("Offense: " + std::to_string(features[0]));
+	offenseText.setCharacterSize(18);
+	offenseText.setFillColor(sf::Color::Black);
+	offenseText.setPosition(sf::Vector2f(1530.0f, 60.0f));
+	
+	defenseText.setFont(myStatsFont);
+	defenseText.setString("Defense: " + std::to_string(features[1]));
+	defenseText.setCharacterSize(18);
+	defenseText.setFillColor(sf::Color::Black);
+	defenseText.setPosition(sf::Vector2f(1530.0f, 85.0f));
+
+	speedText.setFont(myStatsFont);
+	speedText.setString("Speed: " + std::to_string(features[2]));
+	speedText.setCharacterSize(18);
+	speedText.setFillColor(sf::Color::Black);
+	speedText.setPosition(sf::Vector2f(1530.0f, 110.0f));
+
+	camouflageText.setFont(myStatsFont);
+	camouflageText.setString("Camouflage: " + std::to_string(features[3]));
+	camouflageText.setCharacterSize(18);
+	camouflageText.setFillColor(sf::Color::Black);
+	camouflageText.setPosition(sf::Vector2f(1530.0f, 135.0f));
+
+	reproductionRateText.setFont(myStatsFont);
+	reproductionRateText.setString("Reproduction: " + std::to_string(features[4]));
+	reproductionRateText.setCharacterSize(18);
+	reproductionRateText.setFillColor(sf::Color::Black);
+	reproductionRateText.setPosition(sf::Vector2f(1530.0f, 160.0f));
+
+	lifeSpanText.setFont(myStatsFont);
+	lifeSpanText.setString("Life Span: " + std::to_string(features[5]));
+	lifeSpanText.setCharacterSize(18);
+	lifeSpanText.setFillColor(sf::Color::Black);
+	lifeSpanText.setPosition(sf::Vector2f(1750.0f, 60.0f));
+
+	metabolismText.setFont(myStatsFont);
+	metabolismText.setString("Metabolism: " + std::to_string(features[6]));
+	metabolismText.setCharacterSize(18);
+	metabolismText.setFillColor(sf::Color::Black);
+	metabolismText.setPosition(sf::Vector2f(1750.0f, 85.0f));
+
+	intelligenceText.setFont(myStatsFont);
+	intelligenceText.setString("Intelligence: " + std::to_string(features[7]));
+	intelligenceText.setCharacterSize(18);
+	intelligenceText.setFillColor(sf::Color::Black);
+	intelligenceText.setPosition(sf::Vector2f(1750.0f, 110.0f));
+
+	teamworkText.setFont(myStatsFont);
+	teamworkText.setString("Teamwork: " + std::to_string(features[8]));
+	teamworkText.setCharacterSize(18);
+	teamworkText.setFillColor(sf::Color::Black);
+	teamworkText.setPosition(sf::Vector2f(1750.0f, 135.0f));
+
+	eyesightText.setFont(myStatsFont);
+	eyesightText.setString("Eyesight: " + std::to_string(features[9]));
+	eyesightText.setCharacterSize(18);
+	eyesightText.setFillColor(sf::Color::Black);
+	eyesightText.setPosition(sf::Vector2f(1750.0f, 160.0f));
 }
 
 bool Creature::isTouchingMouse(sf::Vector2i mousePosition) {
@@ -156,7 +217,6 @@ bool Creature::isTouchingMouse(sf::Vector2i mousePosition) {
 }
 
 sf::Vector2f Creature::getPosition() {
-
 	return sf::Vector2f();
 }
 

@@ -82,11 +82,17 @@ int main() {
 	clockYears.setCharacterSize(15);
 	clockYears.setFillColor(sf::Color::Black);
 	clockYears.setPosition(sf::Vector2f(1560.0f, 18.0f));
+	
+	sf::Font statsFont;
+	statsFont.loadFromFile("PIXEARG_.TTF");
+
+	sf::Texture creatureTexture;
+	creatureTexture.loadFromFile("square.png");
 
 	// creates a Creature vector and fills it with 10 Creature objects
 	std::vector<Creature> creatureList;
 	for (int i = 0; i < NUM_CREATURES; i++) {
-		creatureList.emplace_back(mapImage);
+		creatureList.emplace_back(mapImage, statsFont, creatureTexture);
 	}
 
 	sf::Vector2i mousePosition;
@@ -118,7 +124,11 @@ int main() {
 				mousePosition = sf::Mouse::getPosition(window);
 				for (int i = 0; i < NUM_CREATURES; i++) {
 					if (creatureList.at(i).isTouchingMouse(mousePosition)) {
-						std::cout << "CREATURE PRESSED" << std::endl;
+
+						for (int i = 0; i < NUM_CREATURES; i++) {
+							creatureList.at(i).selected = false;
+						}
+						creatureList.at(i).selected = true;
 					}
 				}	
 			}
